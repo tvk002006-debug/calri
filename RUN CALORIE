@@ -1,0 +1,43 @@
+# How to Run Calorie-Tracker
+
+Here is the exact sequence of commands and steps to start your project smoothly in the future.
+
+## 1. Start the Backend
+Open a terminal in the `backend` folder and start the FastAPI server:
+```powershell
+cd c:\Users\sridh\Calorie-Tracker\backend
+.\.venv\Scripts\activate
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+> [!IMPORTANT]
+> Make sure your current IP address is active in your **MongoDB Atlas Network Access** list before starting the backend, otherwise the database connection will hang!
+
+## 2. Connect Your Phone via USB
+Ensure your phone is plugged in via USB and USB Debugging is enabled. You can verify it's connected by running:
+```powershell
+adb devices
+```
+
+## 3. Forward the USB Ports
+Because your phone is an external device, you need to forward the network ports over USB so the phone can talk to your computer. Run these commands:
+```powershell
+adb reverse tcp:8081 tcp:8081
+adb reverse tcp:8082 tcp:8082
+adb reverse tcp:8000 tcp:8000
+```
+*(Port 8081/8082 are for the React Native Metro bundler, and Port 8000 is for the Python backend).*
+
+## 4. Start the Frontend
+Open a new terminal in the `frontend` folder and run the app on your device:
+```powershell
+cd c:\Users\sridh\Calorie-Tracker\frontend
+npx react-native run-android --port 8082
+```
+> [!TIP]
+> If you have multiple devices connected (like an emulator *and* a physical phone), you can specify your phone directly by adding its ID:
+> `npx react-native run-android --deviceId 3C1638000F300000 --port 8082`
+
+## Summary of Fixes
+If you ever run into the `INVALID_STATE_ERR` or a completely blank white screen again, it means the app is failing to fetch data. The two most common culprits we fixed today were:
+1. **MongoDB Atlas IP Block**: MongoDB blocked the database connection, causing the backend to hang.
+2. **Missing ADB Reverse**: The phone couldn't reach the backend because port 8000 wasn't forwarded over the USB cable.

@@ -10,8 +10,8 @@ import {
 import Svg, { Circle, Polyline, Line } from 'react-native-svg';
 import { C } from '../../../styles/GlobalStyles';
 
-const GREEN = C.sage;
-const RED = C.error;
+const GREEN = '#6BAE8E'; // muted sage green
+const RED   = C.error;
 const AMBER = C.amber;
 
 function clampPct(value: number) {
@@ -262,6 +262,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     borderWidth: 3,
+    borderColor: '#D8D8E0', // grey track ring
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
   progressRingLabel: { color: C.ink3, fontSize: 10, fontWeight: '600', marginTop: 2 },
   progressTrack: {
     height: 10,
-    backgroundColor: C.surface3,
+    backgroundColor: '#D8D8E0', // grey track
     borderRadius: 5,
     overflow: 'hidden',
   },

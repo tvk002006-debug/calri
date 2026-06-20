@@ -55,15 +55,19 @@ function CalorieRing({ value, goal, over }: { value: number; goal: number; over:
   const progress = Math.min(value / Math.max(goal, 1), 1);
   const displayPct = Math.round((value / Math.max(goal, 1)) * 100);
 
+  const fillColor = over ? C.error : '#6BAE8E'; // muted sage green when on-track, red when over
+
   return (
     <View style={styles.ringContainer}>
       <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-        <Circle cx={size / 2} cy={size / 2} r={r} stroke={C.surface3} strokeWidth={stroke} fill="none" />
+        {/* Grey background track */}
+        <Circle cx={size / 2} cy={size / 2} r={r} stroke="#D8D8E0" strokeWidth={stroke} fill="none" />
+        {/* Green/red filled arc */}
         <Circle
           cx={size / 2}
           cy={size / 2}
           r={r}
-          stroke={over ? C.error : C.sage}
+          stroke={fillColor}
           strokeWidth={stroke}
           fill="none"
           strokeLinecap="round"
@@ -73,7 +77,7 @@ function CalorieRing({ value, goal, over }: { value: number; goal: number; over:
         />
       </Svg>
       <View style={styles.ringCenter}>
-        <Text style={[styles.ringPercentage, { color: over ? C.error : C.sage }]}>{displayPct}%</Text>
+        <Text style={[styles.ringPercentage, { color: fillColor }]}>{displayPct}%</Text>
         <Text style={styles.ringLabel}>of daily goal</Text>
       </View>
     </View>

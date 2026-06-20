@@ -3,25 +3,39 @@ import { StyleSheet } from 'react-native';
 
 // ── Colour palette ────────────────────────────────────────────────────────────
 export const C = {
-  cream:    '#FFFDF9',
+  // ── Backgrounds
+  cream:    '#F9F8F8',   // warm off-white
   surface:  '#FFFFFF',
-  surface2: '#F7F5F0',
-  surface3: '#F0EDE6',
-  border:   '#E8E4DC',
-  border2:  '#D6D1C8',
-  ink:      '#14120E',
-  ink2:     '#5C5952',
-  ink3:     '#9A9690',
-  ink4:     '#C8C5C0',
-  sage:     '#3D6B4F',
-  sageL:    '#E8F0EB',
-  sageM:    '#A8C4B0',
-  amber:    '#C8820A',
-  amberL:   '#FEF4E3',
-  amberM:   '#F5D28A',
+  surface2: '#F3F2F4',  // subtle grey for inputs
+  surface3: '#EBEBEF',  // slightly deeper grey
+
+  // ── Borders
+  border:   '#E4E2E8',  // soft grey
+  border2:  '#CCCAD2',  // medium grey
+
+  // ── Text
+  ink:      '#1A1625',  // near-black with purple tint
+  ink2:     '#4A4558',  // muted dark
+  ink3:     '#8A8599',  // soft grey-purple
+  ink4:     '#C2BFCC',  // light grey
+
+  // ── Dusty rose (primary accent — muted, not neon)
+  primary:  '#C2607A',  // dusty rose
+  sage:     '#C2607A',  // alias
+  sageL:    '#F5EAED',  // very pale rose tint
+  sageM:    '#E8C4CC',  // soft rose
+
+  // ── Muted sage green (secondary accent)
+  mint:     '#6BAE8E',  // muted sage green
+  mintL:    '#E2F2EB',  // pale green tint
+
+  // ── Alerts
+  amber:    '#C98A2A',
+  amberL:   '#FDF3DC',
+  amberM:   '#F0D080',
   amber800: '#7A5000',
-  error:    '#C0415B',
-  errorL:   '#FCEEF1',
+  error:    '#C94060',
+  errorL:   '#FCE8EC',
 };
 
 // ── Shared styles reused across screens ──────────────────────────────────────
@@ -37,7 +51,7 @@ export const g = StyleSheet.create({
     backgroundColor: C.sage, alignItems: 'center', justifyContent: 'center',
   },
   brandGlyph: { color: '#fff', fontSize: 18, fontWeight: '800' },
-  brandName:  { color: C.ink, fontSize: 16, fontWeight: '700', letterSpacing: -0.2 },
+  brandName:  { color: C.ink, fontSize: 26, fontWeight: '900', letterSpacing: -0.2 },
   brandTag:   { color: C.sage, fontSize: 10, fontWeight: '600', letterSpacing: 0.3, marginTop: 1 },
 
   // ── Section headings
@@ -65,9 +79,9 @@ export const g = StyleSheet.create({
     paddingHorizontal: 14, marginBottom: 0,
   },
   inputError: { borderColor: C.error },
-  inputValid: { borderColor: C.sage, backgroundColor: C.surface },
+  inputValid: { borderColor: '#6BAE8E', backgroundColor: '#F2FAF6' }, // muted sage green valid
   inputField: { flex: 1, height: 46, fontSize: 14, fontWeight: '600', color: C.ink },
-  inputCheck: { color: C.sage, fontSize: 16, fontWeight: '700' },
+  inputCheck: { color: '#6BAE8E', fontSize: 16, fontWeight: '700' }, // muted sage green checkmark
   errorText:  { color: C.error, fontSize: 11, fontWeight: '600', marginTop: 4, marginBottom: 12, paddingLeft: 4 },
   errorSpacer:{ height: 14 },
 
@@ -79,20 +93,20 @@ export const g = StyleSheet.create({
   chipTextActive:{ color: C.sage },
 
   // ── CTA button
-  ctaBtn:  { height: 54, backgroundColor: C.sage, borderRadius: 14, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
+  ctaBtn:  { height: 54, backgroundColor: '#C2607A', borderRadius: 14, alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
   ctaDim:  { opacity: 0.4 },
   ctaText: { color: '#fff', fontSize: 15, fontWeight: '700', letterSpacing: 0.1 },
 
-  progressTrack: { height: 3, backgroundColor: C.border },
-  progressFill:  { height: 3, backgroundColor: C.sage, borderRadius: 99 },
+  progressTrack: { height: 4, backgroundColor: C.border },
+  progressFill:  { height: 4, backgroundColor: '#6BAE8E', borderRadius: 99 }, // muted sage green progress
 
   stepHeader: {
     flexDirection: 'row', alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 24, paddingTop: 14, paddingBottom: 4,
   },
-  stepPill: { backgroundColor: C.sageL, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 99 },
-  stepPillText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.8, color: C.sage, textTransform: 'uppercase' },
+  stepPill: { backgroundColor: '#E2F2EB', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 99 },
+  stepPillText: { fontSize: 10, fontWeight: '700', letterSpacing: 0.8, color: '#4A8A6A', textTransform: 'uppercase' },
   stepCount:    { fontSize: 12, fontWeight: '600', color: C.ink3 },
 
   terms:     { textAlign: 'center', fontSize: 11, color: C.ink3, lineHeight: 18 },

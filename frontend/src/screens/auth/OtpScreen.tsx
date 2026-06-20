@@ -11,6 +11,7 @@ import {
   StyleSheet,
   StatusBar,
   Modal,
+  Image,
 } from 'react-native';
 import { BASE_URL } from '../../config/api';
 import { C, g } from '../../styles/GlobalStyles';
@@ -134,11 +135,13 @@ export default function OtpScreen({ route, navigation }: any) {
       >
         {/* Brand */}
         <View style={g.brand}>
-          <View style={g.brandMark}>
-            <Text style={g.brandGlyph}>N</Text>
-          </View>
+          <Image 
+            source={require('../../assets/logo.png')} 
+            style={{ width: 32, height: 32, marginRight: 10 }} 
+            resizeMode="contain" 
+          />
           <View>
-            <Text style={g.brandName}>Nourish</Text>
+            <Text style={g.brandName}>caLos</Text>
             <Text style={g.brandTag}>AI-powered nutrition</Text>
           </View>
         </View>

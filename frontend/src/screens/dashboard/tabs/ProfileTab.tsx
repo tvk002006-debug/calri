@@ -3,9 +3,10 @@ import {
   View, Text, ScrollView, StyleSheet,
   TouchableOpacity, ActivityIndicator,
   Animated, useWindowDimensions, TextInput,
-  Modal, StatusBar, KeyboardAvoidingView, Platform,
+  Modal, StatusBar, KeyboardAvoidingView, Platform, Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { launchImageLibrary } from 'react-native-image-picker';
 import Svg, { Circle, Defs, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 import { BASE_URL } from '../../../config/api';
 import { C } from '../../../styles/GlobalStyles';
@@ -221,8 +222,24 @@ export default function ProfileTab({ phone }: { phone?: string }) {
   const [editGoalType,      setEditGoalType]      = useState('lose_weight');
   const [editActivityLevel, setEditActivityLevel] = useState('light');
 
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
+
   const editSlide = useRef(new Animated.Value(0)).current;
   const editFade  = useRef(new Animated.Value(0)).current;
+
+  // Load saved photo on mount
+  useEffect(() => {
+    AsyncStorage.getItem('profile_photo').then(uri => { if (uri) setPhotoUri(uri); });
+  }, []);
+
+  const pickPhoto = async () => {
+    const result = await launchImageLibrary({ mediaType: 'photo', quality: 0.8 });
+    if (result.assets && result.assets[0]?.uri) {
+      const uri = result.assets[0].uri;
+      setPhotoUri(uri);
+      await AsyncStorage.setItem('profile_photo', uri);
+    }
+  };
 
   const fetchAll = useCallback(() => {
     if (!phone) return;
@@ -337,12 +354,94 @@ export default function ProfileTab({ phone }: { phone?: string }) {
     }
   };
 
-  if (loading) {
-    return (
-      <View style={p.center}>
-        <ActivityIndicator color={C.sage} size="large" />
+function SkeletonPulse({ style }: { style: any }) {
+  const opacity = useRef(new Animated.Value(0.35)).current;
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, { toValue: 0.65, duration: 800, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.35, duration: 800, useNativeDriver: true }),
+      ])
+    ).start();
+  }, [opacity]);
+  return <Animated.View style={[{ backgroundColor: C.border }, style, { opacity }]} />;
+}
+
+function ProfileSkeleton() {
+  return (
+    <ScrollView style={p.root} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 48 }}>
+      <StatusBar barStyle="dark-content" backgroundColor={C.cream} />
+      
+      {/* Skeleton Hero */}
+      <View style={p.hero}>
+        <View style={p.identityRow}>
+          <SkeletonPulse style={{ width: 68, height: 68, borderRadius: 34 }} />
+          <View style={[p.identityText, { gap: 8 }]}>
+            <SkeletonPulse style={{ width: 60, height: 12, borderRadius: 4 }} />
+            <SkeletonPulse style={{ width: 140, height: 22, borderRadius: 6 }} />
+            <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
+              <SkeletonPulse style={{ width: 80, height: 22, borderRadius: 999 }} />
+              <SkeletonPulse style={{ width: 100, height: 22, borderRadius: 999 }} />
+            </View>
+          </View>
+        </View>
+        <SkeletonPulse style={{ marginTop: 16, height: 40, borderRadius: 8 }} />
       </View>
-    );
+
+      <View style={{ paddingHorizontal: 18 }}>
+        {/* Skeleton Today Card */}
+        <View style={p.todayCard}>
+          <View style={{ width: 120, height: 120, alignItems: 'center', justifyContent: 'center' }}>
+            <SkeletonPulse style={{ width: 100, height: 100, borderRadius: 50 }} />
+          </View>
+          <View style={[p.todayRight, { gap: 10 }]}>
+            <SkeletonPulse style={{ width: 50, height: 12, borderRadius: 4, marginBottom: 4 }} />
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <SkeletonPulse style={{ width: 7, height: 7, borderRadius: 4 }} />
+              <SkeletonPulse style={{ width: 80, height: 16, borderRadius: 4 }} />
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <SkeletonPulse style={{ width: 7, height: 7, borderRadius: 4 }} />
+              <SkeletonPulse style={{ width: 60, height: 16, borderRadius: 4 }} />
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <SkeletonPulse style={{ width: 7, height: 7, borderRadius: 4 }} />
+              <SkeletonPulse style={{ width: 70, height: 16, borderRadius: 4 }} />
+            </View>
+          </View>
+        </View>
+
+        <SkeletonPulse style={{ height: 7, borderRadius: 99, marginBottom: 8 }} />
+        <View style={{ alignItems: 'flex-end', marginBottom: 24 }}>
+          <SkeletonPulse style={{ width: 100, height: 10, borderRadius: 4 }} />
+        </View>
+
+        {/* Skeleton Goal ETA */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+          <SkeletonPulse style={{ width: 100, height: 16, borderRadius: 4 }} />
+          <SkeletonPulse style={{ width: 80, height: 12, borderRadius: 4 }} />
+        </View>
+        <View style={[p.etaSummaryCard, { height: 70, justifyContent: 'center' }]}>
+          <SkeletonPulse style={{ width: '90%', height: 14, borderRadius: 4, marginBottom: 6 }} />
+          <SkeletonPulse style={{ width: '60%', height: 14, borderRadius: 4 }} />
+        </View>
+
+        <View style={{ flexDirection: 'row', gap: 8, marginBottom: 24 }}>
+          {[1, 2, 3].map(i => (
+            <View key={i} style={[p.metricTile, { height: 90, justifyContent: 'space-between', alignItems: 'center' }]}>
+              <SkeletonPulse style={{ width: 50, height: 10, borderRadius: 4 }} />
+              <SkeletonPulse style={{ width: 40, height: 18, borderRadius: 4 }} />
+              <SkeletonPulse style={{ width: 30, height: 10, borderRadius: 4 }} />
+            </View>
+          ))}
+        </View>
+      </View>
+    </ScrollView>
+  );
+}
+
+  if (loading) {
+    return <ProfileSkeleton />;
   }
 
   const goals     = profile?.goals || {};
@@ -476,11 +575,20 @@ export default function ProfileTab({ phone }: { phone?: string }) {
       {/* ── HERO ── */}
       <View style={p.hero}>
         <View style={p.identityRow}>
-          <View style={p.avatarRing}>
-          <View style={p.avatar}>
-            <Text style={p.avatarText}>{initial}</Text>
-          </View>
-          </View>
+          {/* Tappable avatar — shows photo or initial */}
+          <TouchableOpacity onPress={pickPhoto} activeOpacity={0.85} style={p.avatarRing}>
+            {photoUri ? (
+              <Image source={{ uri: photoUri }} style={p.avatarPhoto} />
+            ) : (
+              <View style={p.avatar}>
+                <Text style={p.avatarText}>{initial}</Text>
+              </View>
+            )}
+            {/* Camera badge */}
+            <View style={p.cameraBadge}>
+              <Text style={{ fontSize: 10 }}>📷</Text>
+            </View>
+          </TouchableOpacity>
           <View style={p.identityText}>
             <Text style={p.heroEyebrow}>Profile</Text>
             <Text style={p.heroName}>{username}</Text>
@@ -659,9 +767,10 @@ const p = StyleSheet.create({
   identityRow:{ flexDirection: 'row', alignItems: 'center', gap: 14 },
   identityText:{ flex: 1 },
   heroEyebrow:{ color: C.sage, fontSize: 11, fontWeight: '900', letterSpacing: 1.1, textTransform: 'uppercase', marginBottom: 4 },
-  avatarGlow: { position: 'absolute', top: 52, width: 140, height: 140, borderRadius: 70, backgroundColor: C.sageL, opacity: 0.85 },
-  avatarRing: { width: 64, height: 64, borderRadius: 8, borderWidth: 1, borderColor: C.sageM, padding: 3, backgroundColor: C.sageL },
-  avatar:     { flex: 1, borderRadius: 15, backgroundColor: C.sage, justifyContent: 'center', alignItems: 'center' },
+  avatarRing: { width: 68, height: 68, borderRadius: 34, borderWidth: 2, borderColor: C.sageM, padding: 2, backgroundColor: C.sageL, position: 'relative' },
+  avatar:     { flex: 1, borderRadius: 32, backgroundColor: C.sage, justifyContent: 'center', alignItems: 'center' },
+  avatarPhoto:{ width: '100%', height: '100%', borderRadius: 32 },
+  cameraBadge:{ position: 'absolute', bottom: -2, right: -2, width: 22, height: 22, borderRadius: 11, backgroundColor: C.surface, borderWidth: 1.5, borderColor: C.border2, alignItems: 'center', justifyContent: 'center' },
   avatarText: { color: C.surface, fontSize: 24, fontWeight: '800' },
   heroName:   { color: C.ink, fontSize: 27, fontWeight: '900' },
   chipRow:    { flexDirection: 'row', gap: 8, marginTop: 10, flexWrap: 'wrap' },

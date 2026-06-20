@@ -158,6 +158,71 @@ function ExpandableSection({
   );
 }
 
+function Skeleton({ width, height, borderRadius, style }: any) {
+  const anim = useState(new Animated.Value(0.3))[0];
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(anim, { toValue: 0.7, duration: 800, useNativeDriver: true }),
+        Animated.timing(anim, { toValue: 0.3, duration: 800, useNativeDriver: true }),
+      ])
+    ).start();
+  }, []);
+
+  return (
+    <Animated.View
+      style={[
+        {
+          width,
+          height,
+          borderRadius: borderRadius || 8,
+          backgroundColor: C.surface3,
+          opacity: anim,
+        },
+        style,
+      ]}
+    />
+  );
+}
+
+function SuggestionSkeleton() {
+  return (
+    <View style={styles.root}>
+      <StatusBar barStyle="dark-content" backgroundColor={C.cream} />
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Coach</Text>
+        <Text style={styles.headerSubtitle}>Preparing your recommendations...</Text>
+      </View>
+      
+      <View style={styles.statusCard}>
+        <Skeleton width="50%" height={24} style={{ marginBottom: 16 }} />
+        <Skeleton width="80%" height={36} style={{ marginBottom: 24 }} />
+        <Skeleton width="100%" height={8} borderRadius={4} style={{ marginBottom: 12 }} />
+        <Skeleton width="30%" height={12} />
+      </View>
+
+      <View style={styles.section}>
+        <Skeleton width="40%" height={20} style={{ marginBottom: 16 }} />
+        <View style={styles.foodsContainer}>
+          {[1, 2, 3].map(i => (
+            <View key={i} style={styles.foodCard}>
+              <View style={styles.foodCardHeader}>
+                <Skeleton width={44} height={44} borderRadius={12} style={{ marginRight: 12 }} />
+                <View style={{ flex: 1, gap: 8 }}>
+                  <Skeleton width="70%" height={16} />
+                  <Skeleton width="40%" height={12} />
+                </View>
+              </View>
+              <Skeleton width="90%" height={12} style={{ marginTop: 8 }} />
+            </View>
+          ))}
+        </View>
+      </View>
+    </View>
+  );
+}
+
 export default function SuggestionTab({ phone }: any) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -194,12 +259,7 @@ export default function SuggestionTab({ phone }: any) {
   };
 
   if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={GREEN} />
-        <Text style={styles.loadingText}>Preparing your recommendations...</Text>
-      </View>
-    );
+    return <SuggestionSkeleton />;
   }
 
   const consumed = profile?.today_calories ?? 0;

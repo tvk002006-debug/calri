@@ -10,6 +10,7 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import { BASE_URL } from '../../config/api';
 import { C, g } from '../../styles/GlobalStyles';
@@ -133,11 +134,13 @@ export default function LoginScreen({ navigation }: any) {
       >
         {/* Brand */}
         <View style={g.brand}>
-          <View style={g.brandMark}>
-            <Text style={g.brandGlyph}>N</Text>
-          </View>
+          <Image 
+            source={require('../../assets/logo.png')} 
+            style={{ width: 48, height: 48, marginRight: 10 }} 
+            resizeMode="contain" 
+          />
           <View>
-            <Text style={g.brandName}>Nourish</Text>
+            <Text style={g.brandName}>caLos</Text>
             <Text style={g.brandTag}>AI-powered nutrition</Text>
           </View>
         </View>
@@ -170,11 +173,28 @@ export default function LoginScreen({ navigation }: any) {
             placeholder="Phone number"
             placeholderTextColor={C.ink4}
           />
+          {/* Digit count badge */}
+          {rawDigits.length > 0 && (
+            <View style={[s.badge, isReady && s.badgeReady]}>
+              <Text style={[s.badgeText, isReady && s.badgeTextReady]}>
+                {rawDigits.length}/10
+              </Text>
+            </View>
+          )}
         </View>
 
-        {/* Hint */}
-        <View style={s.hintRow}>
-         
+        {/* 10-dot progress indicator */}
+        <View style={s.dotsRow}>
+          {Array.from({ length: 10 }).map((_, i) => (
+            <View
+              key={i}
+              style={[
+                s.dot,
+                i < rawDigits.length && s.dotFilled,
+                i === rawDigits.length - 1 && s.dotActive,
+              ]}
+            />
+          ))}
         </View>
 
         {/* CTA */}
@@ -244,6 +264,30 @@ const s = StyleSheet.create({
     fontWeight: '600', letterSpacing: 1.2,
     paddingHorizontal: 12, height: '100%',
   },
+
+  // 10-dot progress
+  dotsRow: { flexDirection: 'row', gap: 6, marginTop: 10, marginBottom: 28 },
+  dot: {
+    flex: 1, height: 4, borderRadius: 2,
+    backgroundColor: C.border,
+  },
+  dotFilled: { backgroundColor: '#6BAE8E' },
+  dotActive: {
+    backgroundColor: '#6BAE8E',
+    shadowColor: '#6BAE8E', shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5, shadowRadius: 4,
+  },
+
+  // Digit badge
+  badge: {
+    marginRight: 12,
+    paddingHorizontal: 8, paddingVertical: 3,
+    borderRadius: 8,
+    backgroundColor: C.surface3,
+  },
+  badgeReady: { backgroundColor: '#E2F2EB' },
+  badgeText: { fontSize: 11, fontWeight: '700', color: C.ink3 },
+  badgeTextReady: { color: '#4A8A6A' },
 
   hintRow:  { flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 8, marginBottom: 24 },
   hintDot:  { width: 6, height: 6, borderRadius: 3 },

@@ -722,7 +722,7 @@ export default function DashboardScreen({ route }: any) {
             {transcript || (isListening ? 'Speak now...' : '...')}
           </Text>
           <Text style={s.voiceOverlayStatus}>
-            {status}{audioChunks > 0 ? ` (${audioChunks} chunks)` : ''}
+            {status}
           </Text>
         </View>
       )}
