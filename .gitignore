@@ -1,0 +1,88 @@
+# ─────────────────────────────────────────
+# Python
+# ─────────────────────────────────────────
+backend/.venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+
+# ─────────────────────────────────────────
+# Node / React Native
+# ─────────────────────────────────────────
+frontend/node_modules/
+frontend/.bundle/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─────────────────────────────────────────
+# React Native Android
+# ─────────────────────────────────────────
+frontend/android/.gradle/
+frontend/android/app/build/
+frontend/android/build/
+frontend/android/local.properties
+frontend/android/.cxx/
+
+# APK / AAB
+*.apk
+*.aab
+
+# ─────────────────────────────────────────
+# React Native iOS
+# ─────────────────────────────────────────
+frontend/ios/build/
+frontend/ios/Pods/
+
+# Xcode
+*.xcworkspace
+*.xcuserdata
+*.xcodeproj/project.xcworkspace
+
+# ─────────────────────────────────────────
+# Metro / Watchman
+# ─────────────────────────────────────────
+frontend/.metro-health-check*
+frontend/.watchmanconfig
+
+# ─────────────────────────────────────────
+# IDE
+# ─────────────────────────────────────────
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# ─────────────────────────────────────────
+# Environment
+# ─────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.env
+
+# Config files with sensitive/endpoint data
+frontend/src/config/api.ts
+frontend/src/config/voice.ts
+!frontend/src/config/*.example.ts
+
+# ─────────────────────────────────────────
+# Testing / Coverage
+# ─────────────────────────────────────────
+coverage/
+.pytest_cache/
+
+# ─────────────────────────────────────────
+# Misc
+# ─────────────────────────────────────────
+dist/
+build/
+temp/
+tmp/

@@ -1,0 +1,55 @@
+# Docker Compose for Calorie Tracker Backend Services
+# Note: Frontend (React Native) runs locally, not in Docker
+
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: calorie_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/calorie_app
+      - REDIS_URL=redis://redis:6379
+      - GEMINI_KEY=${GEMINI_KEY}
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    networks:
+      - calorie_network
+
+  mongodb:
+    image: mongo:7
+    container_name: calorie_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: calorie_app
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - calorie_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: calorie_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - calorie_network
+
+volumes:
+  mongo_data:
+
+networks:
+  calorie_network:
+    driver: bridge
