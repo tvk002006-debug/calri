@@ -73,3 +73,17 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Expo
+.expo
+dist/
+web-build/
+
+# Temporary analysis files
+*log*.txt
+*output*.json
+*meta*.json
+*info*.json
+fetch_*.js
+log_url*.txt
+eas_output.json
