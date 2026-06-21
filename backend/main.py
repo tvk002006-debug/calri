@@ -1,5 +1,7 @@
 from fastapi import FastAPI
+from dotenv import load_dotenv
 
+load_dotenv()
 from routes.auth import router as auth_router
 from routes.user import router as user_router
 from routes.voice import router as voice_router

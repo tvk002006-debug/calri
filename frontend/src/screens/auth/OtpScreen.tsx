@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { saveSession } from '../../utils/session';
+import { NotificationManager } from '../../utils/NotificationManager';
 import {
   View,
   Text,
@@ -110,9 +111,28 @@ export default function OtpScreen({ route, navigation }: any) {
 
       if (data.next === 'dashboard') {
         await saveSession({ phone, loggedIn: true });
+        
+        // Trigger welcome notification
+        try {
+          await NotificationManager.init();
+          await NotificationManager.triggerLoginNotification();
+          await NotificationManager.scheduleFoodReminders();
+        } catch (err) {
+          console.log('Notification error:', err);
+        }
+
         showAlert('Welcome back!', 'Verification successful.', 'success');
         setTimeout(() => navigation.replace('Dashboard', { phone }), 500);
       } else {
+        // Trigger welcome notification for new user onboarding as well
+        try {
+          await NotificationManager.init();
+          await NotificationManager.triggerLoginNotification();
+          await NotificationManager.scheduleFoodReminders();
+        } catch (err) {
+          console.log('Notification error:', err);
+        }
+
         showAlert('Verified', "Let's set up your profile.", 'success');
         setTimeout(() => navigation.replace('Onboarding', { phone }), 500);
       }

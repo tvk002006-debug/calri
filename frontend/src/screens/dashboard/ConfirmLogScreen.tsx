@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { NotificationManager } from '../../utils/NotificationManager';
 import {
   View,
   Text,
@@ -243,12 +244,18 @@ export default function ConfirmLogScreen({
 
   const editedTotal = editedItems.reduce((s, i) => s + (i.calories || 0), 0);
   const mealColor = MEAL_COLORS[mealType] || C.sage;
-
   const handleConfirm = () => {
     const valid = editedItems.filter(i => i.food.trim() && i.calories > 0 && !i.error);
     if (!valid.length) return;
 
     onConfirm(valid, editedTotal, mealType);
+
+    // Cancel matching notification reminder since the user has logged the meal
+    if (mealType === 'lunch') {
+      NotificationManager.cancelReminder('lunch-reminder');
+    } else if (mealType === 'dinner') {
+      NotificationManager.cancelReminder('dinner-reminder');
+    }
 
     if (onSpeak && !hasSpoken) {
       setHasSpoken(true);
