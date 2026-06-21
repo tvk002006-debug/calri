@@ -69,8 +69,6 @@ Thumbs.db
 *.env
 
 # Config files with sensitive/endpoint data
-frontend/src/config/api.ts
-frontend/src/config/voice.ts
 !frontend/src/config/*.example.ts
 
 # ─────────────────────────────────────────

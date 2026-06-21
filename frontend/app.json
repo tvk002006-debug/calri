@@ -1,4 +1,17 @@
 {
-  "name": "frontend",
-  "displayName": "frontend"
+  "expo": {
+    "name": "caLos",
+    "slug": "calos",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "android": {
+      "package": "com.frontend"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "ec25889f-0daa-4172-bf60-fb1c4f5c6053"
+      }
+    },
+    "owner": "dineshcis-organization"
+  }
 }
