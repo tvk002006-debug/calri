@@ -1,1 +1,1 @@
-export const BACKEND_WS = 'ws://127.0.0.1:8000/ws';
+export const BACKEND_WS = 'wss://calri-20.onrender.com/ws';
