@@ -45,6 +45,20 @@ app.include_router(
     tags=["photos"]
 )
 
+@app.on_event("startup")
+def startup_event():
+    from database import mongo_client, redis_client
+    try:
+        mongo_client.admin.command('ping')
+        print("[STARTUP] MongoDB connection established")
+    except Exception as e:
+        print(f"[STARTUP] MongoDB connection failed: {e}")
+        
+    try:
+        redis_client.ping()
+        print("[STARTUP] Redis connection established")
+    except Exception as e:
+        print(f"[STARTUP] Redis connection failed: {e}")
 
 @app.get("/")
 def root():
