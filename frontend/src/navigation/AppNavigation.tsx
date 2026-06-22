@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { DeviceEventEmitter } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import WelcomeScreen from '../screens/auth/WelcomeScreen';
@@ -40,6 +41,14 @@ export default function AppNavigator() {
   useEffect(() => {
     warmUpServer(); // wake up Render server immediately on app open
     checkSession();
+
+    const logoutSub = DeviceEventEmitter.addListener('logout', () => {
+      setSession(null);
+    });
+
+    return () => {
+      logoutSub.remove();
+    };
   }, []);
 
   if (loading) return null;

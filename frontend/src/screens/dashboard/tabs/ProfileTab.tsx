@@ -4,6 +4,7 @@ import {
   TouchableOpacity, ActivityIndicator,
   Animated, useWindowDimensions, TextInput,
   Modal, StatusBar, KeyboardAvoidingView, Platform, Image,
+  DeviceEventEmitter,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -200,7 +201,7 @@ function FieldRow({ label, value, onChangeText, keyboardType = 'default', unit, 
 // ─────────────────────────────────────────────
 // MAIN
 // ─────────────────────────────────────────────
-export default function ProfileTab({ phone }: { phone?: string }) {
+export default function ProfileTab({ phone, onLogout }: { phone?: string; onLogout?: () => void }) {
   const { width }  = useWindowDimensions();
   const CARD_PAD   = width >= 768 ? 32 : 20;
 
@@ -347,8 +348,8 @@ export default function ProfileTab({ phone }: { phone?: string }) {
   const doLogout = async () => {
     try {
       await AsyncStorage.clear();
-      const { DevSettings } = require('react-native');
-      DevSettings.reload();
+      if (onLogout) onLogout();
+      DeviceEventEmitter.emit('logout');
     } catch (err) {
       console.log('Logout error:', err);
     }
