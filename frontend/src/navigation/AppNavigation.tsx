@@ -10,8 +10,16 @@ import OnboardingScreen from '../screens/auth/OnboardingScreen';
 import DashboardScreen from '../screens/dashboard/Dashboard';
 
 import { getSession } from '../utils/session';
+import { BASE_URL } from '../config/api';
 
 const Stack = createNativeStackNavigator();
+
+// Ping backend immediately on startup to wake up Render free tier
+const warmUpServer = () => {
+  fetch(`${BASE_URL}/`)
+    .then(() => console.log('[SERVER] Warmed up'))
+    .catch(() => console.log('[SERVER] Wake-up ping failed (will retry on first request)'));
+};
 
 export default function AppNavigator() {
 
@@ -30,6 +38,7 @@ export default function AppNavigator() {
   }, []);
 
   useEffect(() => {
+    warmUpServer(); // wake up Render server immediately on app open
     checkSession();
   }, []);
 
