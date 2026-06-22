@@ -15,6 +15,7 @@ import Svg, { Path } from 'react-native-svg';
 
 import LiveAudioStream from 'react-native-live-audio-stream';
 import InCallManager from 'react-native-incall-manager';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../../config/api';
 import BottomNav from './components/BottomNav';
 import ConfirmLogScreen from './ConfirmLogScreen';
@@ -116,7 +117,27 @@ export default function DashboardScreen({ route }: any) {
   // ─────────────────────────────────────────────
   const loadAll = async (showLoading = true) => {
     try {
-      if (showLoading) setLoading(true);
+      // 1. Try loading from local Cache first
+      const [cachedUser, cachedToday, cachedWeekly] = await Promise.all([
+        AsyncStorage.getItem(`user_data_${phone}`),
+        AsyncStorage.getItem(`today_data_${phone}`),
+        AsyncStorage.getItem(`weekly_data_${phone}`),
+      ]);
+
+      let hasCache = false;
+      if (cachedUser && cachedToday && cachedWeekly) {
+        setUserData(JSON.parse(cachedUser));
+        setTodayData(JSON.parse(cachedToday));
+        setWeeklyData(JSON.parse(cachedWeekly));
+        setLoading(false);
+        hasCache = true;
+      }
+
+      if (showLoading && !hasCache) {
+        setLoading(true);
+      }
+
+      // 2. Fetch fresh data from network in parallel
       const [profileRes, dailyRes, weeklyRes] = await Promise.all([
         fetch(`${BASE_URL}/user/${phone}`),
         fetch(`${BASE_URL}/dashboard/daily/${phone}`),
@@ -127,13 +148,22 @@ export default function DashboardScreen({ route }: any) {
         dailyRes.json(),
         weeklyRes.json(),
       ]);
+
+      // 3. Save fresh data to state & update local cache
       setUserData(profile);
       setTodayData(daily);
       setWeeklyData(weekly);
+
+      await Promise.all([
+        AsyncStorage.setItem(`user_data_${phone}`, JSON.stringify(profile)),
+        AsyncStorage.setItem(`today_data_${phone}`, JSON.stringify(daily)),
+        AsyncStorage.setItem(`weekly_data_${phone}`, JSON.stringify(weekly)),
+      ]);
+
     } catch (e) {
       console.log('loadAll error:', e);
     } finally {
-      if (showLoading) setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -149,6 +179,10 @@ export default function DashboardScreen({ route }: any) {
       ]);
       setTodayData(daily);
       setWeeklyData(weekly);
+      await Promise.all([
+        AsyncStorage.setItem(`today_data_${phone}`, JSON.stringify(daily)),
+        AsyncStorage.setItem(`weekly_data_${phone}`, JSON.stringify(weekly)),
+      ]);
     } catch (e) {
       console.log('refreshData error:', e);
     }
