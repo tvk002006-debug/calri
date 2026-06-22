@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: calos-backend
+    env: docker
+    region: ohio
+    plan: free
+    rootDir: backend
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: 8000
