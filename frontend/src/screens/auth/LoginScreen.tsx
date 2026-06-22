@@ -105,21 +105,17 @@ export default function LoginScreen({ navigation }: any) {
     if (!phone)    { showAlert('No number',  'Please enter your phone number to continue.'); return; }
     if (!isReady)  { showAlert('Incomplete', `Phone numbers must be 10 digits. You've entered ${rawDigits.length}.`); return; }
 
-    try {
-      setLoading(true);
-      const res  = await fetch(`${BASE_URL}/auth/send-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: rawDigits }),
-      });
-      const data = await res.json();
-      if (data.error) { showAlert('Oops!', data.error); }
-      else            { navigation.navigate('Otp', { phone: rawDigits }); }
-    } catch {
-      showAlert('Network error', 'Could not reach the server. Check your connection and try again.');
-    } finally {
-      setLoading(false);
-    }
+    // Instant navigation to prevent any UI delay for the user
+    navigation.navigate('Otp', { phone: rawDigits });
+
+    // Send the OTP request to the server in the background
+    fetch(`${BASE_URL}/auth/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: rawDigits }),
+    }).catch(err => {
+      console.log('Background send-otp error:', err);
+    });
   };
 
   return (
