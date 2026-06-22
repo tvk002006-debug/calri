@@ -13,7 +13,7 @@ fastapi==0.111.0
 google-ai-generativelanguage>=0.6.4
 google-api-core==2.19.0
 google-api-python-client==2.127.0
-google-auth==2.29.0
+google-auth>=2.48.1
 google-auth-httplib2==0.2.0
 google-genai>=2.9.0
 google-generativeai==0.7.0
